@@ -1,0 +1,57 @@
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.GS_touch.Focuser.dll.config
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.GS_touch.Focuser.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.GS_touch.Focuser.pdb
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Astrometry.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Attributes.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Controls.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.DeviceInterfaces.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Exceptions.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.SettingsProvider.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Utilities.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Utilities.Video.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Internal.Extensions.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Astrometry.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Attributes.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Controls.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.DeviceInterfaces.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Exceptions.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.SettingsProvider.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Utilities.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\bin\x86\Release\ASCOM.Internal.Extensions.xml
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\GS_touch.csprojAssemblyReference.cache
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.Properties.Resources.resources
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.SetupDialogForm.resources
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\GS_touch.csproj.GenerateResource.cache
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\GS_touch.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\GS_touch.csproj.CopyComplete
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.Focuser.dll
+C:\Users\user\Desktop\GS_touch\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.Focuser.pdb
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.GS_touch.Focuser.dll.config
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.GS_touch.Focuser.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.GS_touch.Focuser.pdb
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Astrometry.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Attributes.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Controls.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.DeviceInterfaces.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Exceptions.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.SettingsProvider.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Utilities.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Utilities.Video.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Internal.Extensions.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Astrometry.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Attributes.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Controls.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.DeviceInterfaces.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Exceptions.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.SettingsProvider.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Utilities.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\bin\x86\Release\ASCOM.Internal.Extensions.xml
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\GS_touch.csprojAssemblyReference.cache
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.MainWindow.resources
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.Properties.Resources.resources
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.SetupDialogForm.resources
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\GS_touch.csproj.GenerateResource.cache
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\GS_touch.csproj.CoreCompileInputs.cache
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\GS_touch.csproj.CopyComplete
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.Focuser.dll
+c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\x86\Release\ASCOM.GS_touch.Focuser.pdb
