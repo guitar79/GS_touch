@@ -47,7 +47,7 @@ void MSmodeControl(){
       stepper.setCurrentPosition(_resetPosition); // reset position setting
       _resetPosition = 0;
       
-      setstep(); //microstepping setting
+      setMicrostep(); //microstepping setting
     }
 
   else if(S[3] && !rm) subm--;

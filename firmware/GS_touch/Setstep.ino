@@ -1,4 +1,5 @@
-void setstep()
+//Set microstep for DRV8825
+void setMicrostep()
   {
     switch(stepmode)
     {
@@ -36,11 +37,10 @@ void setstep()
       digitalWrite(MS0,HIGH);
       digitalWrite(MS1,LOW);
       digitalWrite(MS2,HIGH);
-        break;
-
+      break;
 
       default:
       Serial.println("Microstepping mode should be from 1 to 6");
     }
-        Serial.print("Microstepping mode:"); Serial.print(stepmode);
-}
+    Serial.print("Microstepping mode:"); Serial.print(stepmode);
+  }

@@ -1,20 +1,27 @@
 //https://github.com/olikraus/u8glib/wiki/fontsize
 //https://github.com/olikraus/u8glib/wiki/userreference#setprintpos
 
-#include <U8glib.h>
-U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE|U8G_I2C_OPT_DEV_0);  // I2C / TWI 
-//U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_DEV_0|U8G_I2C_OPT_NO_ACK|U8G_I2C_OPT_FAST);
-
 void U8G_start()
   {
     u8g.setFont(u8g_font_5x8);
     u8g.setColorIndex(1);
     u8g.setFontPosTop();
-
-    //draw();
+  //draw();
   }
 
-void draw()
+
+void U8G_test()
+  {
+    u8g.firstPage();   
+  do 
+    {      
+      u8g.drawStr(0, 20, "Hello World"); 
+    } 
+      while( u8g.nextPage() );   
+  delay(1000);   
+  }
+
+void U8G_draw()
   {
     Serial.println(subm);
     u8g.firstPage();   
