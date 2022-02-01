@@ -9,9 +9,9 @@
 // (2019. 11. 14.) Ver. 2.0 프로토콜 변경 
 
 #include <EEPROM.h>
-String firmwareName = "GStouch";
+String firmwareName = "GS_touch";
 String firmwareDate = "2021-05-24";
-String firmwareVer = "1.0";
+String firmwareVer = "1.2";
 
 // ----------------------------------------------------------------------------------------------------------
 // 프로토콜
