@@ -1,12 +1,111 @@
+/*------------------------------------------------------------------------
+Command   Response    Description
+GP        XXXX        Get Current Motor 1 Positon, Unsigned Hexadecimal
+GN        XXXX        Get the New Motor 1 Position, Unsigned Hexadecimal
+GT        XXXX        Get the Current Temperature, Signed Hexadecimal
+GD        XX          Get the Motor 1 speed, valid options are “02, 04, 08, 10, 20”
+GH        XX          “FF” if half step is set, otherwise “00”
+GI        XX          “01” if the motor is moving, otherwise “00”
+GB        XX          The current RED Led Backlight value, Unsigned Hexadecimal
+GV        XX          Code for current firmware version
+SPxxxx                Set the Current Motor 1 Position, Unsigned Hexadecimal
+SNxxxx                Set the New Motor 1 Position, Unsigned Hexadecimal
+SF                    Set Motor 1 to Full Step
+SH                    Set Motor 1 to Half Step
+SDxx                  Set the Motor 1 speed, valid options are “02, 04, 08, 10, 20”
+FG                    Start a Motor 1 move, moves the motor to the New Position.
+FQ                    Halt Motor 1 move, position is retained, motor is stopped.
+
+Serial Commands: 
+All commands are preceded by a “:” symbol and 
+finished with a “#” symbol. “x” represents a 
+hexadecimal digit.
+
+Example: To set a new position: :SN0537#
+For motor 2 all of the above commands are available, just precede the command with a “2”.
+Motor 2 Example: To set Motor 2 to a new position: :2SN0537#
+
+------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------
+Generic serial commands can be used to operate the controllers if needed. 
+Please see table below for command set.
+
+Command Char #        Return Variable         Comments
+1 2 3 4 5 6 7 8 
+: C #                 N/A                     
+Initiate a temperature conversion; the conversion process takes a maximum of 750 milliseconds. The value returned by the :GT# command will not be valid until the conversion process completes.
+
+: F G #               N/A 
+Go to the new position as set by the ":SNYYYY#" command.
+
+: F Q #               N/A 
+Immediately stop any focus motor movement.
+
+: G C #               XX# 
+Returns the temperature coefficient where XX is a two-digit signed (2’s complement) hex number.
+
+: G D #               XX# 
+Returns the current stepping delay where XX is a two-digit unsigned hex number. See the :SD# command for a list of possible return values.
+
+: G H #               00# OR FF# 
+Returns "FF#" if the focus motor is half-stepped otherwise return "00#"
+
+: G I #               00# OR 01# 
+Returns "00#" if the focus motor is not moving, otherwise return "01#"
+
+: G N #               YYYY# 
+Returns the new position previously set by a ":SNYYYY" command where YYYY is a four-digit unsigned hex number.
+
+: G P #               YYYY# 
+Returns the current position where YYYY is a four-digit unsigned hex number.
+
+: G T #               YYYY# 
+Returns the current temperature where YYYY is a four-digit signed (2’s complement) hex number.
+
+: G V #               DD# 
+Get the version of the firmware as a two-digit decimal number where the first digit is the major version number, and the second digit is the minor version number.
+
+: S C X X #           N/A 
+Set the new temperature coefficient where XX is a two-digit, signed (2’s complement) hex number.
+
+: S D X X #           N/A 
+Set the new stepping delay where XX is a two-digit, unsigned hex number. Valid values to send are 02, 04, 08, 10 and 20, which correspond to a stepping delay of 250, 125, 63, 32 and 16 steps per second respectively.
+
+: S F #               N/A 
+Set full-step mode.
+
+: S H #               N/A 
+Set half-step mode.
+
+: S N Y Y Y Y #       N/A 
+Set the new position where YYYY is a four-digit unsigned hex number.
+
+: S P Y Y Y Y #       N/A 
+Set the current position where YYYY is a four-digit unsigned hex number.
+
+: + #                 N/A 
+Activate temperature compensation focusing.
+
+: - #                 N/A 
+Disable temperature compensation focusing.
+
+: P O X X #           N/A 
+Temperature calibration offset, XX is a two-digit signed hex number, in half degree increments. 
+Example 1: :PO02# offset of +1°C  
+Example 2: :POFB# offset of -2.5°C
+------------------------------------------------------------------------*/
+
+
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <AccelStepper.h>
-#include <EEPROM.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <TimerOne.h>
 #include <Stream.h>
-//#include "DummySerial.h"
+#include "DummySerial.h"
+#include "EEPROM.h"
+#include "DHT22.h"
 
 #define BTN_IN 7
 #define BTN_OUT 8
@@ -19,45 +118,25 @@
 // temp sensor
 #define ONE_WIRE_BUS 2 
 
-// ----------------------------------------------------------------
-// for the temperature and hubmidity sensor
-#include <DHT_U.h>
-#include <DHT.h>
-#define DHT22_PIN 2
-#define DHTTYPE DHT22
-DHT dht(DHT22_PIN, DHTTYPE);
-int chkSensor;
-String Temperature;
-String Humidity;
-// ----------------------------------------------------------------
-
-
-// ----------------------------------------------------------------
-// for the EEPROM
+// for EEPROM set
 #include <EEPROM.h>
-String firmwareName = "GS_touch";
-//unsigned long now = now()
-String firmwareVer = "1.2";
-String firmwareDate = "2022-02-26";
-// ----------------------------------------------------------------
-
+int eepromPOSOffset = 48;
 
 #define PERIOD_US 2000
 
-// #define USE_DRIVER
-
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
-SoftwareSerial debugSerial(9, 10);
+    SoftwareSerial debugSerial(9, 10);
 #else
-DummySerial debugSerial;
+    DummySerial debugSerial;
 #endif
 
 // initialize the stepper library
+// #define USE_DRIVER
 #ifdef USE_DRIVER
-AccelStepper stepper(AccelStepper::DRIVER, PIN_DRIVER_STEP, PIN_DRIVER_DIR);
+    AccelStepper stepper(AccelStepper::DRIVER, PIN_DRIVER_STEP, PIN_DRIVER_DIR);
 #else
-AccelStepper stepper(AccelStepper::FULL4WIRE, 6, 4, 5, 3, false);
+    AccelStepper stepper(AccelStepper::FULL4WIRE, 6, 4, 5, 3, false);
 #endif
 
 // temperature
@@ -95,14 +174,9 @@ void setup()
         Serial.begin(9600);
         debugSerial.begin(9600);
         
-        Serial.print(firmwareName);
-        Serial.print(firmwareVer);
-        Serial.println(firmwareDate);
-    
-        //EEPROM
-        writeStringToEEPROM(0, firmwareName);
-        startEEPROMsetup();
-
+        // change firmware in eepROM
+        checkFWEEPROM();
+        
         // setup pins
         pinMode(LED_BUILTIN, OUTPUT);
         digitalWrite(LED_BUILTIN, LOW);
@@ -111,20 +185,22 @@ void setup()
         debugSerial.println("init motor driver...");
         stepper.setMaxSpeed(speedFactor * speedMult);
         stepper.setAcceleration(100);
-    #ifdef USE_DRIVER
-        stepper.setEnablePin(PIN_DRIVER_ENABLE);
-    #endif
+        #ifdef USE_DRIVER
+          stepper.setEnablePin(PIN_DRIVER_ENABLE);
+        #endif
         millisLastMove = millis();
 
         // read saved position from EEPROM
-        //EEPROM.put(0, (long)0);
-        EEPROM.get(0, currentPosition);
+        // EEPROM.put(0, (long)0);
+        EEPROM.get(eepromPOSOffset, currentPosition);
         // prevent negative values if EEPROM is empty
         currentPosition = max(0, currentPosition);
 
         stepper.setCurrentPosition(currentPosition);
         lastSavedPosition = currentPosition;
-        debugSerial.print("Last position in EEPROM...");
+        Serial.print("Last position in EEPROM: ");
+        Serial.println(lastSavedPosition);
+        debugSerial.print("Last position in EEPROM: ");
         debugSerial.println(lastSavedPosition);
 
         // init temperature sensor
@@ -145,10 +221,12 @@ void setup()
 *************************************/
 void loop()
   {
-    Serial.println(firmwareDate);
+    humidityTemperatureReport();
     // process the command we got
     if (eoc)
     {
+        Serial.print("Got new command: ");
+        Serial.println(line);
         debugSerial.print("Got new command: ");
         debugSerial.println(line);
 
@@ -169,7 +247,10 @@ void loop()
             {
                 param = line.substring(2);
             }
-
+        Serial.print(cmd);
+        Serial.print(":");
+        Serial.println(param);
+        Serial.println(line);
         debugSerial.print(cmd);
         debugSerial.print(":");
         debugSerial.println(param);
@@ -204,6 +285,10 @@ void loop()
                 Serial.print(tempString);
                 Serial.print("#");
 
+                Serial.print("current motor position: 0x");
+                Serial.print(tempString);
+                Serial.print(" = ");
+                Serial.println(currentPosition);
                 debugSerial.print("current motor position: 0x");
                 debugSerial.print(tempString);
                 debugSerial.print(" = ");
@@ -218,6 +303,8 @@ void loop()
                 Serial.print(tempString);
                 Serial.print("#");
 
+                Serial.print("target motor position: ");
+                Serial.println(tempString);
                 debugSerial.print("target motor position: ");
                 debugSerial.println(tempString);
             }
@@ -322,13 +409,17 @@ void loop()
         // set new motor position
         if (cmd.equalsIgnoreCase("SN"))
             {
-                //Serial.println(param);
                 debugSerial.print("new target position ");
                 debugSerial.print(targetPosition);
                 debugSerial.print(" -> ");
                 targetPosition = hexstr2long(param);
                 debugSerial.println(targetPosition);
-                //Serial.println(targetPosition);
+                Serial.println(param);
+                Serial.print("new target position ");
+                Serial.print(targetPosition);
+                Serial.print(" -> ");
+                Serial.println(targetPosition);
+
                 //stepper.moveTo(pos);
             }
         // initiate a move
@@ -392,18 +483,19 @@ void loop()
                     // Save current location in EEPROM
                     if (lastSavedPosition != currentPosition)
                         {
-                            EEPROM.put(0, currentPosition);
+                            EEPROM.put(eepromPOSOffset, currentPosition);
                             lastSavedPosition = currentPosition;
+                            Serial.println("Save last position to EEPROM");
                             debugSerial.println("Save last position to EEPROM");
                         }
                     // set motor to sleep state
                     stepper.disableOutputs();
+                    Serial.println("Disabled output pins");
                     debugSerial.println("Disabled output pins");
                 }
         }
 
     digitalWrite(LED_BUILTIN, isRunning);
-
     //delay(20);
     }
 
@@ -438,130 +530,4 @@ long hexstr2long(String line)
 static void intHandler()
     {
         stepper.run();
-    }
-
-
-class DummySerial : public Stream 
-    {
-        public:
-            void begin(long speed)
-                {
-                
-                }
-
-            virtual size_t write(uint8_t byte)
-                {
-                    return 1;
-                }
-            virtual int read()
-                {
-                    return 0;
-                }
-            virtual int available()
-                {
-                    return 0;
-                }
-            virtual void flush()
-                {
-                
-                }
-
-            virtual int peek()
-                {
-                    return 0;
-                }
-    };
-
-
-
-
-void humidityTemperatureReport() 
-    {
-        chkSensor = digitalRead(DHT22_PIN);
-        Temperature = String(dht.readTemperature(),1);
-        Humidity = String(dht.readHumidity(),1);
-        switch (chkSensor) 
-        {
-            case 1:
-            Serial.print("TEMPERATURE:");
-            Serial.print(Temperature);
-            Serial.println("#");
-            delay(50);
-            Serial.print("HUMIDITY:");
-            Serial.print(Humidity);
-            Serial.println("#");
-            delay(50);
-            break;
-
-            case 0:
-            Serial.print("TEMPERATURE:");
-            Serial.print("CHECKSUMERROR");
-            Serial.println("#");
-            Serial.print("HUMIDITY:");
-            Serial.print("CHECKSUMERROR");
-            Serial.println("#");
-            break;
-
-            default:
-            Serial.print("TEMPERATURE:");
-            Serial.print("UNKNOWNERROR");
-            Serial.println("#");
-            Serial.print("HUMIDITY:");
-            Serial.print("UNKNOWNERROR");
-            Serial.println("#");
-            break;
-        }
-    }    
-
-void startEEPROMsetup() 
-    {
-    Serial.begin(9600);
-    int eepromOffset = 0;
-
-    // Writing
-    String str1 = "Today's tutorial:";
-    String str2 = "Save String to EEPROM.";
-    String str3 = "Thanks for reading!";
-    int str1AddrOffset = writeStringToEEPROM(eepromOffset, str1);
-    int str2AddrOffset = writeStringToEEPROM(str1AddrOffset, str2);
-    writeStringToEEPROM(str2AddrOffset, str3);
-    
-    // Reading
-    String newStr1;
-    String newStr2;
-    String newStr3;
-    int newStr1AddrOffset = readStringFromEEPROM(eepromOffset, &newStr1);
-    int newStr2AddrOffset = readStringFromEEPROM(newStr1AddrOffset, &newStr2);
-    readStringFromEEPROM(newStr2AddrOffset, &newStr3);
-    
-    Serial.println(newStr1);
-    Serial.println(newStr2);
-    Serial.println(newStr3); 
-    delay(2000);
-    }
-
-
-
-int writeStringToEEPROM(int addrOffset, const String &strToWrite)
-    {
-        byte len = strToWrite.length();
-        EEPROM.write(addrOffset, len);
-        for (int i = 0; i < len; i++)
-            {
-                EEPROM.write(addrOffset + 1 + i, strToWrite[i]);
-            }
-        return addrOffset + 1 + len;
-    }
-    
-    int readStringFromEEPROM(int addrOffset, String *strToRead)
-    {
-        int newStrLen = EEPROM.read(addrOffset);
-        char data[newStrLen + 1];
-        for (int i = 0; i < newStrLen; i++)
-            {
-                data[i] = EEPROM.read(addrOffset + 1 + i);
-            }
-        data[newStrLen] = '\0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
-        *strToRead = String(data);
-        return addrOffset + 1 + newStrLen;
     }
