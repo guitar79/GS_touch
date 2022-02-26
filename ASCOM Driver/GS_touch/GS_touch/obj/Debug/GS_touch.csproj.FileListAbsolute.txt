@@ -27,3 +27,5 @@ c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch
 c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\Debug\GS_touch.csproj.CopyComplete
 c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\Debug\ASCOM.GS_touch.Focuser.dll
 c:\Users\user\Documents\GitHub\Kevin_FCSH_controller\FCSH2\ASCOM Driver\GS_touch\GS_touch\obj\Debug\ASCOM.GS_touch.Focuser.pdb
+c:\Users\Kiehyun\Desktop\KBox\GS_touch\ASCOM Driver\GS_touch\GS_touch\obj\Debug\ASCOM.GS_touch.Focuser.dll
+c:\Users\Kiehyun\Desktop\KBox\GS_touch\ASCOM Driver\GS_touch\GS_touch\obj\Debug\ASCOM.GS_touch.Focuser.pdb
