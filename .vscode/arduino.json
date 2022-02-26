@@ -2,5 +2,5 @@
     "port": "COM3",
     "board": "arduino:avr:uno",
     "programmer": "arduino:avrisp",
-    "sketch": "arduino-motorfocus\\src\\arduino-motorfocus.ino"
+    "sketch": "arduino-motorfocus\\arduino-motorfocus.ino"
 }

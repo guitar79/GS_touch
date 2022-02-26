@@ -5,6 +5,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <TimerOne.h>
+#include <Stream.h>
 //#include "DummySerial.h"
 
 #define BTN_IN 7
@@ -15,7 +16,31 @@
 #define PIN_DRIVER_DIR 3
 #define PIN_DRIVER_STEP 5
 
-#define ONE_WIRE_BUS 2
+// temp sensor
+#define ONE_WIRE_BUS 2 
+
+// ----------------------------------------------------------------
+// for the temperature and hubmidity sensor
+#include <DHT_U.h>
+#include <DHT.h>
+#define DHT22_PIN 2
+#define DHTTYPE DHT22
+DHT dht(DHT22_PIN, DHTTYPE);
+int chkSensor;
+String Temperature;
+String Humidity;
+// ----------------------------------------------------------------
+
+
+// ----------------------------------------------------------------
+// for the EEPROM
+#include <EEPROM.h>
+String firmwareName = "GS_touch";
+//unsigned long now = now()
+String firmwareVer = "1.2";
+String firmwareDate = "2022-02-26";
+// ----------------------------------------------------------------
+
 
 #define PERIOD_US 2000
 
@@ -69,6 +94,14 @@ void setup()
     {
         Serial.begin(9600);
         debugSerial.begin(9600);
+        
+        Serial.print(firmwareName);
+        Serial.print(firmwareVer);
+        Serial.println(firmwareDate);
+    
+        //EEPROM
+        writeStringToEEPROM(0, firmwareName);
+        startEEPROMsetup();
 
         // setup pins
         pinMode(LED_BUILTIN, OUTPUT);
@@ -97,6 +130,7 @@ void setup()
         // init temperature sensor
         sensors.begin();
 
+
         // setup buttons
         pinMode(BTN_IN, INPUT_PULLUP);
         pinMode(BTN_OUT, INPUT_PULLUP);
@@ -111,6 +145,7 @@ void setup()
 *************************************/
 void loop()
   {
+    Serial.println(firmwareDate);
     // process the command we got
     if (eoc)
     {
@@ -329,16 +364,17 @@ void loop()
     else if (btn_in == LOW || btn_out == LOW)
         {
             stepper.enableOutputs();
+
             while (btn_in == LOW || btn_out == LOW)
                 {
                     if (btn_in == LOW)
-                    {
-                    stepper.move(BTN_STEP);
-                    }
+                        {
+                            stepper.move(BTN_STEP);
+                        }
                     else
-                    {
-                    stepper.move(-BTN_STEP);
-                    }
+                        {
+                            stepper.move(-BTN_STEP);
+                        }
                     stepper.runSpeedToPosition();
                     btn_in = digitalRead(BTN_IN);
                     btn_out = digitalRead(BTN_OUT);
@@ -369,7 +405,7 @@ void loop()
     digitalWrite(LED_BUILTIN, isRunning);
 
     //delay(20);
-  }
+    }
 
 // read the command until the terminating # character
 void serialEvent() 
@@ -403,4 +439,129 @@ static void intHandler()
     {
         stepper.run();
     }
+
+
+class DummySerial : public Stream 
+    {
+        public:
+            void begin(long speed)
+                {
+                
+                }
+
+            virtual size_t write(uint8_t byte)
+                {
+                    return 1;
+                }
+            virtual int read()
+                {
+                    return 0;
+                }
+            virtual int available()
+                {
+                    return 0;
+                }
+            virtual void flush()
+                {
+                
+                }
+
+            virtual int peek()
+                {
+                    return 0;
+                }
+    };
+
+
+
+
+void humidityTemperatureReport() 
+    {
+        chkSensor = digitalRead(DHT22_PIN);
+        Temperature = String(dht.readTemperature(),1);
+        Humidity = String(dht.readHumidity(),1);
+        switch (chkSensor) 
+        {
+            case 1:
+            Serial.print("TEMPERATURE:");
+            Serial.print(Temperature);
+            Serial.println("#");
+            delay(50);
+            Serial.print("HUMIDITY:");
+            Serial.print(Humidity);
+            Serial.println("#");
+            delay(50);
+            break;
+
+            case 0:
+            Serial.print("TEMPERATURE:");
+            Serial.print("CHECKSUMERROR");
+            Serial.println("#");
+            Serial.print("HUMIDITY:");
+            Serial.print("CHECKSUMERROR");
+            Serial.println("#");
+            break;
+
+            default:
+            Serial.print("TEMPERATURE:");
+            Serial.print("UNKNOWNERROR");
+            Serial.println("#");
+            Serial.print("HUMIDITY:");
+            Serial.print("UNKNOWNERROR");
+            Serial.println("#");
+            break;
+        }
+    }    
+
+void startEEPROMsetup() 
+    {
+    Serial.begin(9600);
+    int eepromOffset = 0;
+
+    // Writing
+    String str1 = "Today's tutorial:";
+    String str2 = "Save String to EEPROM.";
+    String str3 = "Thanks for reading!";
+    int str1AddrOffset = writeStringToEEPROM(eepromOffset, str1);
+    int str2AddrOffset = writeStringToEEPROM(str1AddrOffset, str2);
+    writeStringToEEPROM(str2AddrOffset, str3);
     
+    // Reading
+    String newStr1;
+    String newStr2;
+    String newStr3;
+    int newStr1AddrOffset = readStringFromEEPROM(eepromOffset, &newStr1);
+    int newStr2AddrOffset = readStringFromEEPROM(newStr1AddrOffset, &newStr2);
+    readStringFromEEPROM(newStr2AddrOffset, &newStr3);
+    
+    Serial.println(newStr1);
+    Serial.println(newStr2);
+    Serial.println(newStr3); 
+    delay(2000);
+    }
+
+
+
+int writeStringToEEPROM(int addrOffset, const String &strToWrite)
+    {
+        byte len = strToWrite.length();
+        EEPROM.write(addrOffset, len);
+        for (int i = 0; i < len; i++)
+            {
+                EEPROM.write(addrOffset + 1 + i, strToWrite[i]);
+            }
+        return addrOffset + 1 + len;
+    }
+    
+    int readStringFromEEPROM(int addrOffset, String *strToRead)
+    {
+        int newStrLen = EEPROM.read(addrOffset);
+        char data[newStrLen + 1];
+        for (int i = 0; i < newStrLen; i++)
+            {
+                data[i] = EEPROM.read(addrOffset + 1 + i);
+            }
+        data[newStrLen] = '\0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
+        *strToRead = String(data);
+        return addrOffset + 1 + newStrLen;
+    }

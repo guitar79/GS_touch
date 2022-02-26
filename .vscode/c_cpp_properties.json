@@ -34,11 +34,14 @@
             "includePath": [
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\variants\\standard",
+                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\SoftwareSerial\\src",
+                "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\AccelStepper\\src",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\libraries\\EEPROM\\src",
+                "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\OneWire",
+                "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\DallasTemperature",
+                "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\TimerOne",
                 "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\DHT_sensor_library",
                 "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\Adafruit_Unified_Sensor",
-                "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\AccelStepper\\src",
-                "C:\\Users\\Kiehyun\\Documents\\Arduino\\libraries\\U8glib\\src",
                 "c:\\program files (x86)\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include",
                 "c:\\program files (x86)\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include-fixed",
                 "c:\\program files (x86)\\arduino\\hardware\\tools\\avr\\avr\\include"
