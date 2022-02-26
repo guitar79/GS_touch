@@ -1,3 +1,4 @@
+
 // GS-touch
 // ONLY FOR USE WITH Biopolar STEPPER MOTORS ONLY
 // LEDS, TEMPERATURE PROBE, OLED
@@ -10,7 +11,8 @@
 
 #include <EEPROM.h>
 String firmwareName = "GS_touch";
-String firmwareDate = "2021-05-24";
+//unsigned long now = now()
+String firmwareDate = "2022-05-24";
 String firmwareVer = "1.2";
 
 // ----------------------------------------------------------------------------------------------------------
@@ -51,6 +53,7 @@ bool PCMODE = false;
 
 // ----------------------------------------------------------------------------------------------------------
 // for the temperature and hubmidity sensor
+#include <DHT_U.h>
 #include <DHT.h>
 #define DHT22_PIN 2
 #define DHTTYPE DHT22

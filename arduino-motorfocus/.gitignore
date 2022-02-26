@@ -1,0 +1,6 @@
+.pio
+.vscode/*
+README.pdf
+test/*
+lib/*
+include/*
