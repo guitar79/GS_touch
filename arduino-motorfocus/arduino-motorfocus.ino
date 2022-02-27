@@ -5,10 +5,10 @@
 #include <DallasTemperature.h>
 #include <TimerOne.h>
 #include <Stream.h>
-#include "DummySerial.h"
-#include "EEPROM.h"
-#include "DHT22.h"
-#include "display_U8G.h"
+//#include "DummySerial.h"
+//#include "EEPROM.h"
+//#include "DHT22.h"
+//#include "display_U8G.h"
 
 #define BTN_IN 7
 #define BTN_OUT 8
@@ -18,31 +18,42 @@
 #define PIN_DRIVER_DIR 3
 #define PIN_DRIVER_STEP 5
 
-
 //---------------------------------------------
-// firmware informaion
-String firmwareName = "GS_touch";
-String firmwareVer  = "0.88";
-String firmwareDate = "2022-02-26";
-String SerialNo     = "GS_T000001";
-int eepromFIRMOffset = 0;
-//---------------------------------------------
-
 // for EEPROM set
 #include <EEPROM.h>
+// firmware informaion
+String firmName   = "GS_touch" ;
+String firmVer    = "0.80" ;
+String firmDate   = "2022-02-26" ;
+String SerialNo   = "00001" ;
+//#define cipherKey   "1925"
+int eepromFIRMOffset = 0;
 int eepromPOSOffset = 48;
+//---------------------------------------------
+
+/*/---------------------------------------------
+// for EEPROM set
+#include <EEPROM.h>
+// firmware informaion
+#define firmName    "GS_touch"
+#define firmVer     "0.80"
+#define firmDate    "2022-02-26"
+#define SerialNo    "00001"
+//#define cipherKey   "1925"
+int eepromFIRMOffset = 0;
+int eepromPOSOffset = 48;
+//---------------------------------------------*/
 
 
 // ----------------------------------------------------------------
 // for the temperature and hubmidity sensor
 #define use_DHT22
 #ifdef use_DHT22
-
     #include <DHT_U.h>
     #include <DHT.h>
     #define DHT22_PIN 2
     #define DHTTYPE DHT22
-    //DHT dht(DHT22_PIN, DHTTYPE);
+    DHT dht(DHT22_PIN, DHTTYPE);
     int chkSensor;
     String Temperature;
     String Humidity;
@@ -59,12 +70,11 @@ int eepromPOSOffset = 48;
 #include <U8glib.h>
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE|
                           U8G_I2C_OPT_DEV_0);  // I2C / TWI 
-//U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_DEV_0|
-//                          U8G_I2C_OPT_NO_ACK|
-//                          U8G_I2C_OPT_FAST);
 
 String inputString = "";
 // ----------------------------------------------------------------
+
+
 
 #define PERIOD_US 2000
 
@@ -158,6 +168,7 @@ void setup()
         // init timer
         Timer1.initialize(PERIOD_US);
         Timer1.attachInterrupt(intHandler);
+        U8G_start();
     }
 
 /*************************************
