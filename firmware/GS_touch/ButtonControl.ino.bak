@@ -2,7 +2,7 @@
 //#define PCB_1
 
 //Kevin's PCB
-#define PCB_1 
+#define PCB_2 
 
 //스위치 핀 번호
 #ifdef PCB_1 

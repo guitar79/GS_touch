@@ -2,7 +2,6 @@
 // https://roboticsbackend.com/arduino-write-string-in-eeprom/
 #include <EEPROM.h>
 
-        
 int writeStringToEEPROM(int addrOffset, const String &strToWrite)
     {
         byte len = strToWrite.length();

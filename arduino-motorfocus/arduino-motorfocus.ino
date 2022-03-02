@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <AccelStepper.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+//#include <OneWire.h>
+//#include <DallasTemperature.h>
 #include <TimerOne.h>
 #include <Stream.h>
 //#include "DummySerial.h"
@@ -10,13 +10,13 @@
 //#include "DHT22.h"
 //#include "display_U8G.h"
 
-#define BTN_IN 7
-#define BTN_OUT 8
-#define BTN_STEP 32
+#define BTN_IN 8
+#define BTN_OUT 9
+#define BTN_STEP 10
 
-#define PIN_DRIVER_ENABLE 4
-#define PIN_DRIVER_DIR 3
-#define PIN_DRIVER_STEP 5
+#define PIN_DRIVER_ENABLE 5
+#define PIN_DRIVER_DIR 4
+#define PIN_DRIVER_STEP 3
 
 //---------------------------------------------
 // for EEPROM set
@@ -47,7 +47,16 @@ int eepromPOSOffset = 48;
 
 // ----------------------------------------------------------------
 // for the temperature and hubmidity sensor
-#define use_DHT22
+#include <DHT_U.h>
+#include <DHT.h>
+#define DHT22_PIN 2
+#define DHTTYPE DHT22
+DHT dht(DHT22_PIN, DHTTYPE);
+int chkSensor;
+//String Temperature;
+//String Humidity;
+
+/*/#define use_DHT22
 #ifdef use_DHT22
     #include <DHT_U.h>
     #include <DHT.h>
@@ -63,6 +72,7 @@ int eepromPOSOffset = 48;
     OneWire oneWire(ONE_WIRE_BUS);
     DallasTemperature sensors(&oneWire);
 #endif
+*/
 // ----------------------------------------------------------------
 
 // ----------------------------------------------------------------
@@ -75,7 +85,6 @@ String inputString = "";
 // ----------------------------------------------------------------
 
 
-
 #define PERIOD_US 2000
 
 #define DEBUG
@@ -85,14 +94,32 @@ String inputString = "";
     DummySerial debugSerial;
 #endif
 
+
 // initialize the stepper library
 // #define USE_DRIVER
-#ifdef USE_DRIVER
-    AccelStepper stepper(AccelStepper::DRIVER, PIN_DRIVER_STEP, PIN_DRIVER_DIR);
-#else
-    AccelStepper stepper(AccelStepper::FULL4WIRE, 6, 4, 5, 3, false);
-#endif
+//#ifdef USE_DRIVER
+//    AccelStepper stepper(AccelStepper::DRIVER, PIN_DRIVER_STEP, PIN_DRIVER_DIR);
+//#else
+//    AccelStepper stepper(AccelStepper::FULL4WIRE, 6, 4, 5, 3, false);
+//#endif
 
+
+// DRV8825 Motor driver pins
+#define motorInterfaceType 1
+//#define DIR 4
+//#define STEP 3
+#define MS0 15
+#define MS1 12
+#define MS2 13
+#define MOTOR_STEPS 200
+
+// Declaration needed for the AccelStepper Library
+// ----------------------------------------------------------------------------------------------------------
+// Accell Stepper liblary
+// https://www.airspayce.com/mikem/arduino/AccelStepper/classAccelStepper.html#a608b2395b64ac15451d16d0371fe13ce
+#include <AccelStepper.h>
+//AccelStepper stepper(motorInterfaceType, STEP, DIR);
+AccelStepper stepper(AccelStepper::DRIVER, PIN_DRIVER_STEP, PIN_DRIVER_DIR);
 
 
 // multiplier of SPEEDMUX, currently max speed is 480.
@@ -123,17 +150,21 @@ static void intHandler();
 *************************************/
 void setup()
     {
-        Serial.begin(115200);
-        debugSerial.begin(115200);
+        Serial.begin(9600);
+        debugSerial.begin(9600);
+        
+        checkFWEEPROM();
         
         // init temperature sensor
-        checkFWEEPROM();
-        #ifdef use_DHT22
+        /*#ifdef use_DHT22
             dht.begin();
             sensorDHT22Report();
         #else
             sensors.begin();
-        #endif
+        #endif*/
+
+        dht.begin();
+        sensorDHT22Report();
 
         // setup pins
         pinMode(LED_BUILTIN, OUTPUT);
@@ -141,15 +172,16 @@ void setup()
 
         // initalize motor
         debugSerial.println("init motor driver...");
+        
         stepper.setMaxSpeed(speedFactor * speedMult);
         stepper.setAcceleration(100);
-        #ifdef USE_DRIVER
-          stepper.setEnablePin(PIN_DRIVER_ENABLE);
-        #endif
+        //#ifdef USE_DRIVER
+        stepper.setEnablePin(PIN_DRIVER_ENABLE);
+        //#endif
         millisLastMove = millis();
 
         // read saved position from EEPROM
-        // EEPROM.put(0, (long)0);
+        //EEPROM.put(eepromPOSOffset, (long)4000);
         EEPROM.get(eepromPOSOffset, currentPosition);
         // prevent negative values if EEPROM is empty
         currentPosition = max(0, currentPosition);
@@ -160,6 +192,7 @@ void setup()
         Serial.println(lastSavedPosition);
         debugSerial.print("Last position in EEPROM: ");
         debugSerial.println(lastSavedPosition);
+        delay(500);
 
         // setup buttons
         pinMode(BTN_IN, INPUT_PULLUP);
@@ -176,6 +209,7 @@ void setup()
 *************************************/
 void loop()
   {
+    // sensorDHT22Report();
     // process the command we got
     if (eoc)
     {
@@ -265,7 +299,7 @@ void loop()
         // get the current temperature from DS1820 temperature sensor
         if (cmd.equalsIgnoreCase("GT"))
             {
-                #ifdef use_DHT22
+                /*#ifdef use_DHT22
                     //dht.begin();
                     //humidityTemperatureReport();
                     float temperature = dht.readTemperature();
@@ -277,6 +311,12 @@ void loop()
                     debugSerial.print("temperature: ");
                     debugSerial.println(temperature);
                 #endif
+                */
+                float temperature = dht.readTemperature();
+                Serial.print("temperature: ");
+                Serial.println(temperature);
+                debugSerial.print("temperature: ");
+                debugSerial.println(temperature);
                 
                 if (temperature > 100 || temperature < -50)
                     {
@@ -368,6 +408,7 @@ void loop()
             {
                 currentPosition = hexstr2long(param);
                 stepper.setCurrentPosition(currentPosition);
+                EEPROM.put(eepromPOSOffset, currentPosition); 
             }
         // set new motor position
         if (cmd.equalsIgnoreCase("SN"))
@@ -392,6 +433,9 @@ void loop()
                 //running = true;
                 stepper.enableOutputs();
                 stepper.moveTo(targetPosition);
+                EEPROM.put(eepromPOSOffset, targetPosition); 
+                Serial.print("new position: ");
+                Serial.println(targetPosition);
             }
         // stop a move
         if (cmd.equalsIgnoreCase("FQ"))
@@ -437,6 +481,9 @@ void loop()
             stepper.disableOutputs();
             millisLastMove = millis();
             currentPosition = stepper.currentPosition();
+            Serial.print("current Position: ");
+            Serial.println(currentPosition); //debug
+            EEPROM.put(eepromPOSOffset, currentPosition);
         }
     else
         {
