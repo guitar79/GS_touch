@@ -33,7 +33,7 @@ void checkFWEEPROM()
     {
         extern String firmName;
         extern String firmVer  ;
-        extern String firmDate ;
+        //extern String firmDate ;
         extern String SerialNo  ;
 
         Serial.print("Current firmware: ");
@@ -70,7 +70,7 @@ void checkFWEEPROM()
         Serial.println(eepSerialNo); 
         
         //check firmware
-        if (firmName == eepfirmName && firmVer == eepfirmVer && firmDate == eepfirmDate && SerialNo == eepSerialNo)
+        if (firmName == eepfirmName && firmVer == eepfirmVer && eepfirmDate == firmDate && SerialNo == eepSerialNo)
             {
                 Serial.println("Firmware is same...");
             }

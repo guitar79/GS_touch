@@ -5,6 +5,8 @@
 //#include <DallasTemperature.h>
 #include <TimerOne.h>
 #include <Stream.h>
+#include "Config.h"
+#include "Constants.h"
 //#include "DummySerial.h"
 //#include "EEPROM.h"
 //#include "DHT22.h"
@@ -23,9 +25,10 @@
 #include <EEPROM.h>
 // firmware informaion
 String firmName   = "GS_touch" ;
-String firmVer    = "0.80" ;
-String firmDate   = "2022-02-26" ;
+String firmVer    = "0.10" ;
+//String firmDate   = "2022-02-26" ;
 String SerialNo   = "00001" ;
+#define firmDate          __DATE__
 //#define cipherKey   "1925"
 int eepromFIRMOffset = 0;
 int eepromPOSOffset = 48;
